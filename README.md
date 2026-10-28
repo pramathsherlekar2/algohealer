@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AlgoHealer local hackathon demo
 
 AlgoHealer has two interfaces. The **React/Vite dashboard** is the main demo and connects to a small local API for a real, repeatable Data Transformer incident. The separate **Streamlit prototype** is preserved for its existing workflows; its incident, diagnosis, canary, and recovery content remains simulated and is labeled as demo data.
@@ -88,3 +89,6 @@ The tests exercise deterministic fault injection, actual error logs and metrics,
 | `app.py` | Separate Streamlit demo prototype |
 | `algohealer_app.py` | Compatibility copy of the Streamlit app |
 | `public/app.py` | Streamlit source copy served to the React source viewer |
+=======
+# algohealer
+>>>>>>> 3e829855b0e6589de06ff4ef76caed2017310eaf
