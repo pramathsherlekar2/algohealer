@@ -1,0 +1,6 @@
+{
+  "name": "AlgoHealer - Self-Healing AI Automation System",
+  "description": "Autonomous DevOps & SRE self-healing platform featuring vector-indexed stack trace clustering, zero-shot code patching, canary shadow-testing, and human-in-the-loop governance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
