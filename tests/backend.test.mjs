@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { diagnoseIncident } from '../server/diagnosis.mjs';
 import { createEngine, LEGACY_SAMPLE, REPAIR_ACTION_ID } from '../server/engine.mjs';
+import { decodeSignedState, encodeSignedState } from '../server/signed-state.mjs';
 
 test('fault injection creates a real transformer error log and updates measured metrics', () => {
   const engine = createEngine();
@@ -96,6 +97,21 @@ test('backend does not recommend a repair when the known trigger code is absent'
 
   assert.equal(diagnosis.recommendedAction, null);
   assert.match(diagnosis.actionReason, /No backend-verified repair rule/);
+});
+
+test('signed Vercel state survives a fresh engine instance and rejects tampering', () => {
+  const source = createEngine();
+  source.injectFault();
+  const secret = 'test-only-state-secret';
+  const token = encodeSignedState(source.exportState(), secret);
+  const restored = createEngine();
+  restored.restoreState(decodeSignedState(token, secret));
+
+  assert.equal(restored.status().transformer.faultActive, true);
+  assert.equal(restored.status().transformer.metrics.errors, 1);
+  assert.equal(restored.status().transformer.logs[0].id, 'LOG-0001');
+  assert.equal(decodeSignedState(token, 'different-secret'), null);
+  assert.equal(decodeSignedState(`${token}x`, secret), null);
 });
 
 test('canary passes the allow-listed repair and fails an unsupported action', () => {

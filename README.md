@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # AlgoHealer local hackathon demo
 
 AlgoHealer has two interfaces. The **React/Vite dashboard** is the main demo and connects to a small local API for a real, repeatable Data Transformer incident. The separate **Streamlit prototype** is preserved for its existing workflows; its incident, diagnosis, canary, and recovery content remains simulated and is labeled as demo data.
@@ -57,6 +56,12 @@ Open the local Vite address, normally <http://localhost:3000>, and sign in with 
 
 The model output is a diagnosis hypothesis only. Gemini must cite backend log IDs; the backend rejects unknown IDs and displays evidence directly from its own logs. The backend—not Gemini—selects a repair, and only when the real error code is `SCHEMA_NORMALIZER_DISABLED`. It cannot run model-generated code or shell commands. Applying the fixed `restore-legacy-schema-normalizer` repair always requires a passing canary and operator approval. This constrains repair risk; it does not prove every sentence in the diagnosis is true.
 
+## Deploy the demo on Vercel
+
+Push the project, including `api/[...path].mjs`, `server/signed-state.mjs`, and `vercel.json`, to GitHub first. In Vercel, choose **New Project**, import `pramathsherlekar2/algohealer`, and deploy. The Vercel config builds the Vite frontend and exposes the Node API function at `/api/*`. Add `DEMO_STATE_SECRET` under the Vercel project's Environment Variables so the API can preserve state in a signed, HTTP-only browser cookie. Generate a private value with `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`; don't commit or share it. Optionally add `GEMINI_API_KEY` and `GEMINI_MODEL`; without a key the app uses **Demo analysis**. Do not upload `.env.local`.
+
+On Vercel, the demo state is stored in a signed, per-browser cookie so requests can work across serverless function instances without a database. It is intended for a hackathon demo, not as a durable multi-user incident store. The local setup continues to run the API as a regular process.
+
 ## Run the separate Streamlit prototype
 
 The Streamlit app uses its original session-state workflows and does not connect to the React local API. Its metrics, diagnosis profiles, canary animation, audit history, and recovery sequence are demo simulations.
@@ -89,6 +94,3 @@ The tests exercise deterministic fault injection, actual error logs and metrics,
 | `app.py` | Separate Streamlit demo prototype |
 | `algohealer_app.py` | Compatibility copy of the Streamlit app |
 | `public/app.py` | Streamlit source copy served to the React source viewer |
-=======
-# algohealer
->>>>>>> 3e829855b0e6589de06ff4ef76caed2017310eaf

@@ -298,6 +298,20 @@ export function createEngine({ now = () => Date.now(), verifyAfterRepair = () =>
     return snapshot();
   }
 
+  function exportState() {
+    return deepCopy({ state, nextIncidentNumber, nextLogNumber });
+  }
+
+  function restoreState(saved) {
+    if (!saved?.state || !Array.isArray(saved.state.logs) || !Array.isArray(saved.state.audit) || !saved.state.metrics) {
+      return reset();
+    }
+    state = deepCopy(saved.state);
+    nextIncidentNumber = Number.isInteger(saved.nextIncidentNumber) ? saved.nextIncidentNumber : 1;
+    nextLogNumber = Number.isInteger(saved.nextLogNumber) ? saved.nextLogNumber : state.logs.length + 1;
+    return snapshot();
+  }
+
   state = freshState();
   return {
     status: snapshot,
@@ -308,5 +322,7 @@ export function createEngine({ now = () => Date.now(), verifyAfterRepair = () =>
     rejectRepair,
     approveRepair,
     reset,
+    exportState,
+    restoreState,
   };
 }
